@@ -20,6 +20,12 @@
     });
   }
   function stop_contraction(key,url,start_ts,intensity) {
+    var intensity_var
+    if(intensity >= 0 && intensity <= 10) {
+      intensity_var = intensity
+    } else {
+      intensity_var = -1
+    }
     var newDate = new Date();
     $.ajax({
       url: url,
@@ -28,7 +34,7 @@
         csrfmiddlewaretoken: document.getElementsByName('csrfmiddlewaretoken')[0].value,
         start_ts: start_ts,
         end_ts: newDate.timestamp(),
-        intensity: intensity,
+        intensity: intensity_var,
       },
       success: function(data) {
         //alert("Congratulations!" + data);
