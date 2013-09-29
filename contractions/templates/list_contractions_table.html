@@ -11,7 +11,7 @@
   {% for cont in object_list %}
     <tr>
       <td>{{ cont.length }}</td>
-      <td>{% if cont.intensity >= 0 %} {{ cont.intensity }} {% else %} <a href="#" onclick="update_intensity('{{ cont.pk }}', '{{ cont.get_url_update_intensity }}', '{{ cont.start_ts|date:"Y-m-d H:i:s" }}', '{{ cont.end_ts|date:"Y-m-d H:i:s" }}')">Set</a>{% endif %}</td>
+      <td>{% if cont.intensity >= 0 %} <div class="intensity">{{ cont.intensity }}</div> {% else %}<div class="intensity"><button class"btn" onclick="update_intensity('{{ cont.pk }}', '{{ cont.get_url_update_intensity }}', '{{ cont.start_ts|date:"Y-m-d H:i:s" }}', '{{ cont.end_ts|date:"Y-m-d H:i:s" }}')">Set</button></div>{% endif %}</td>
       <td>{{ cont.start_ts }}</td>
       <td>{% if cont.end_ts %} {{ cont.end_ts }} {% else %}{% if forloop.first %}<button class="btn btn-danger" onClick="stop_contraction('{{ cont.pk }}', '{{ cont.get_url_stop_contraction }}', '{{ cont.start_ts|date:"Y-m-d H:i:s" }}', '{{ cont.intensity}}')">Stop Contraction</button>{% else %} None <a href="#" onClick="alert('Not setup yet')">Set End Time</a>{% endif %}{% endif %}</td>
     </tr>
