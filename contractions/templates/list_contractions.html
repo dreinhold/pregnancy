@@ -1,0 +1,101 @@
+{% extends "boot_base.html" %}
+{% block title %}Dylan Pregnacy Monitor - Contraction List{% endblock %}
+
+{% block page_javascript %}
+<script type="text/javascript">
+  Date.prototype.timestamp = function(){
+    var dt = this.getFullYear() + "-" + (((this.getMonth()+1) < 10)?"0":"") + (this.getMonth()+1) + "-" + ((this.getDate() < 10)?"0":"") + this.getDate();
+    var tm = ((this.getHours() < 10)?"0":"") + this.getHours() +":"+ ((this.getMinutes() < 10)?"0":"") + this.getMinutes() +":"+ ((this.getSeconds() < 10)?"0":"") + this.getSeconds();
+    return (dt + " " + tm);
+  };
+  function update_table() {
+    $.ajax({
+      url: {% url 'ContractionListTable' %},
+      type: "GET",
+      dataType : "html",
+      success: function( data ) {
+        //alert("Congratulations!" + data);
+        $('#data_table').replaceWith($('#data_table').html(data));
+      },
+    });
+  }
+  function stop_contraction(key,url,start_ts,intensity) {
+    var newDate = new Date();
+    $.ajax({
+      url: url,
+      type: "POST",
+      data: {
+        csrfmiddlewaretoken: document.getElementsByName('csrfmiddlewaretoken')[0].value,
+        start_ts: start_ts,
+        end_ts: newDate.timestamp(),
+        intensity: intensity,
+      },
+      success: function(data) {
+        //alert("Congratulations!" + data);
+        update_table();
+      }, 
+      error: function(xhr, textStatus, errorThrown) {
+        alert("Could not start, error: "+errorThrown+xhr.status+xhr.responseText);
+      }
+    });
+  }
+
+  function start_contraction() {
+    var newDate = new Date();
+    $.ajax({
+      url: {% url 'StartContraction' %},
+      type: "POST",
+      data: {
+        csrfmiddlewaretoken: document.getElementsByName('csrfmiddlewaretoken')[0].value,
+        start_ts: newDate.timestamp(),
+      },
+      success: function(data) {
+        update_table();
+      }, 
+      error: function(xhr, textStatus, errorThrown) {
+        alert("Could not start, error: "+errorThrown+xhr.status+xhr.responseText);
+      }
+    });
+  }
+
+  function update_intensity(key,url,start_ts,end_ts) {
+    /* alert("This should ask you"); */
+    var intensity = prompt("Enter the intensity use 1-10 (10 being stongest)");
+    if(intensity >= 1 && intensity <= 10) {
+      $.ajax({
+        type: "POST",
+        url: url,
+        data: {
+            csrfmiddlewaretoken: document.getElementsByName('csrfmiddlewaretoken')[0].value,
+            intensity: intensity,
+            start_ts: start_ts,
+            end_ts: end_ts,
+        },
+        success: function(data) {
+          //alert("Congratulations!" + data);
+          update_table();
+        },
+        error: function(xhr, textStatus, errorThrown) {
+          alert("Please report this error: "+errorThrown+xhr.status+xhr.responseText);
+        }
+      });
+      //alert("Setting it to " + intensity + " on row " + key);
+    } else if(intensity != null) {
+      if(intensity == "") {
+        intensity = "nothing..";
+      }
+      alert("Error " + intensity + " is not between 1 and 10");
+    }
+  }
+    update_table();
+</script>
+{% endblock %}
+
+{% block content %}
+     {% csrf_token %}
+     <div class="well">
+        <h1>Contraction List</h1>
+     </div>
+<p><button class="btn btn-success" onClick="start_contraction()">Start Contraction</button></p>
+<div id="data_table">Loading..</div>
+{% endblock %}

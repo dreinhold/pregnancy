@@ -1,0 +1,11 @@
+{% load bootstrap_toolkit %}
+<h1>Edit {{object}}</h1>
+
+<form action="{{ target }}" method="POST" class="form">
+{% csrf_token %}
+{% bootstrap_form form layout="vertical" %}
+    <div class="form-actions">
+        <button type="submit" class="btn btn-primary">Submit</button>
+    </div>
+<ul>
+</form>
