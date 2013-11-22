@@ -10,6 +10,7 @@ urlpatterns = patterns('',
     # Examples:
     # url(r'^$', 'pregnancy.views.home', name='home'),
     # url(r'^pregnancy/', include('pregnancy.foo.urls')),
+    url(r'^$', contractions.views.ContractionList.as_view(), name='ContractionList'),
     url(r'^contractions/$', contractions.views.ContractionList.as_view(), name='ContractionList'),
     url(r'^update_intensity/(?P<pk>\d+)/$', contractions.views.UpdateIntensity.as_view(), name='UpdateIntensity'),
     url(r'^update_intensity2/(?P<pk>\d+)/$', contractions.views.UpdateIntensity2.as_view(), name='UpdateIntensity2'),
